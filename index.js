@@ -4,9 +4,9 @@ var http = require("http");
 var app = express();
 global.fetch = require("node-fetch");
 
-const baseUrl = "http://example.com";
+const baseUrl = "http://www.allomatch.com";
 
-app.get("/images*", function(req, res) {
+app.get("*.png", function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   var request = http
     .get(`${baseUrl}${req.originalUrl}`, function(response) {
@@ -19,6 +19,21 @@ app.get("/images*", function(req, res) {
       console.log("Got error: " + e.message, e);
     });
 });
+
+app.get("*.jpg", function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  var request = http
+    .get(`${baseUrl}${req.originalUrl}`, function(response) {
+      res.writeHead(response.statusCode, {
+        "Content-Type": response.headers["content-type"]
+      });
+      response.pipe(res);
+    })
+    .on("error", function(e) {
+      console.log("Got error: " + e.message, e);
+    });
+});
+
 
 app.get("*", function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
